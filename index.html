@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Mikuu! ❤️</title>
+    <style>
+        :root {
+            --primary: #ff2a5f;
+            --secondary: #ff758c;
+            --bg-dark: #0f051d;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --text-light: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        /* Lock Screen */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a002c, #4a0026, #ff2a5f);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #lock-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255,42,95,0.8);
+        }
+
+        #lock-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        #lock-screen input {
+            padding: 16px 25px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            border: 2px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            outline: none;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+
+        #lock-screen button {
+            padding: 14px 35px;
+            background: linear-gradient(45deg, #ff2a5f, #ff758c);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255,42,95,0.5);
+            transition: transform 0.2s;
+        }
+
+        #lock-screen button:active {
+            transform: scale(0.95);
+        }
+
+        /* Swipe Container */
+        .swipe-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15,5,29,0.8) 0%, rgba(45,10,35,0.95) 100%);
+            overflow: hidden;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #ff758c;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255,117,140,0.5);
+        }
+
+        .swipe-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Media Frames */
+        .photo-frame, .video-frame {
+            width: 100%;
+            max-width: 320px;
+            height: 380px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            box-shadow: 0 8px 25px rgba(255,42,95,0.4);
+            margin: 15px 0;
+            background: #000;
+        }
+
+        .photo-frame img, .video-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Poetry & Letter Styling */
+        .shayari-list {
+            text-align: center;
+            width: 100%;
+        }
+
+        .shayari-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 0 15px 15px 0;
+            font-style: italic;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .long-letter {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #f0f0f0;
+            white-space: pre-line;
+        }
+
+        /* Game Area */
+        #game-box {
+            width: 100%;
+            height: 280px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed var(--primary);
+            margin-top: 10px;
+        }
+
+        .game-item {
+            position: absolute;
+            font-size: 2.8rem;
+            cursor: pointer;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* Voucher Grid */
+        .voucher-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .voucher-btn {
+            background: linear-gradient(135deg, #ff2a5f, #c9184a);
+            padding: 15px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Massive I LOVE YOU Page */
+        .huge-love {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff2a5f, #ffffff, #ff758c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255,42,95,0.8);
+            margin: 20px 0;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { opacity: 0.8; filter: drop-shadow(0 0 10px #ff2a5f); }
+            100% { opacity: 1; filter: drop-shadow(0 0 25px #ff758c); }
+        }
+
+        /* Floating Hearts Animation */
+        .bg-heart {
+            position: fixed;
+            color: rgba(255, 42, 95, 0.35);
+            font-size: 1.5rem;
+            animation: floatUp 6s infinite linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Floating Audio Toggle Widget */
+        #music-control {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 25px;
+            z-index: 999;
+            display: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Audio/Video Song File -->
+    <audio id="bg-song" loop preload="auto">
+        <source src="song.mp4" type="audio/mp4">
+    </audio>
+
+    <div id="music-control" onclick="toggleAudio()">🎵 Music: On</div>
+
+    <!-- Lock Screen -->
+    <div id="lock-screen">
+        <h1>Hey Mikuu! 🌸</h1>
+        <p>Unlock karne ke liye Password type karo:</p>
+        <input type="text" id="pass-input" placeholder="Password (2010)...">
+        <button onclick="unlockSite()">Unlock Surprise ✨</button>
+        <p id="err-text" style="color: #ff758c; margin-top: 15px; display: none; font-size: 0.95rem;">❌ Galat Password! "2010" try karo 😉</p>
+    </div>
+
+    <!-- Main Fullscreen Vertical Swipe Container -->
+    <div class="swipe-container" id="main-app">
+
+        <!-- Slide 1: Welcome & Photo -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Happy Birthday Mikuu! 🎉</h2>
+                <p style="font-size: 1.1rem; color: #ff758c; font-weight: bold;">(Miskat - My Dearest World)</p>
+                
+                <div class="photo-frame">
+                    <img src="photo1.jpg" alt="Mikuu Photo">
+                </div>
+
+                <p>Aaj ka poora din sirf tumhara hai! Ek ek slide swipe karke dekho... 💖</p>
+            </div>
+            <div class="swipe-hint">👆 Swipe up for next slide</div>
+        </div>
+
+        <!-- Slide 2: Romantic Shayaris -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Special Birthday Shayari 📜</h2>
+                <div class="shayari-list">
+                    <div class="shayari-item">
+                        "Chehre par khushi aur aankhon me noor ho,<br>
+                        Tum jo chaho wo sab tumko manzoor ho.<br>
+                        Birthday par mile tumhein duniya ki har khushi,<br>
+                        Meri duayein hamesha tumhare sath ho!" ✨
+                    </div>
+                    <div class="shayari-item">
+                        "Teri muskaan se roshan meri har subah hoti hai,<br>
+                        Tu paas na ho phir bhi teri mehak hoti hai.<br>
+                        Mikuu, tum paas raho ya door,<br>
+                        Dil me bas tumhare hi pyar ki jagah hoti hai!" 🌹
+                    </div>
+                    <div class="shayari-item">
+                        "Khuda kare tera har din ek naye jashn jaisa ho,<br>
+                        Teri zindagi me kabhi koi gham na ho.<br>
+                        Tujhe chahat mile itni mere dil se Mikuu,<br>
+                        Ki tujhe kabhi kisi baat ki kami na ho!" 💖
+                    </div>
+                    <div class="shayari-item">
+                        "Teri aankhon me basta hai mera jahan,<br>
+                        Tumse hi shuru hoti hai meri har dastan!" 🥰
+                    </div>
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 3: Short Video 1 (Cake Cutting) -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Cake Cutting Moment 🎂</h2>
+                <p>Wo pyaara sa celebratory moment...</p>
+                <div class="video-frame">
+                    <video id="v1" controls playsinline loop muted autoplay>
+                        <source src="cake.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 4: Long Love Letter (Part 1) -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>A Sweet Letter For You 💌</h2>
+                <div class="long-letter">
+                    <strong>Meri Pyaari Mikuu,</strong>
+
+                    Aaj tumhara birthday hai aur mere paas tumse kehne ke liye bohot saari baatein hain. Jab se tum meri life me aayi ho, sab kuch bohot khoobsurat lagne laga hai.
+
+                    Tumhari wo pyaari si smile, tumhara baat-baat par gussa ho jana, aur phir wapas pyaar se baat karna... meri life ka sabse haseen hissa hai. 
+
+                    Tum mere liye kitni special ho ye words me bayan karna mere liye namumkin hai. Bas itna jaan lo ki tum mere dil ke sabse kareeb ho! 💖
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 5: Short Video 2 (Propose Video) -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Our Propose Moment 💍</h2>
+                <p>Ye pal mere dil ke sabse kareeb hai...</p>
+                <div class="video-frame">
+                    <video id="v2" controls playsinline loop muted autoplay>
+                        <source src="propose.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 6: Love Bite / Hearts Mini-Game -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Love Bite Challenge! 🎮💋</h2>
+                <p>Screen par aane wale Hearts/Bites par click karke <strong>10 Points</strong> score karo!</p>
+                <p style="font-size: 1.3rem; font-weight: bold; color: #ff758c; margin: 8px 0;">Score: <span id="game-score">0</span>/10</p>
+
+                <div id="game-box"></div>
+                <div id="game-win" style="display: none; margin-top: 10px; color: #ff758c; font-weight: bold;">
+                    🎉 Amazing Mikuu! You caught all my hearts! <br> Reward: Unlimited Hugs & Kisses Forever! 😘🤗
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 7: Gift Vouchers -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Your Gift Vouchers 🎟️</h2>
+                <p>Click on any card to redeem your reward:</p>
+                <div class="voucher-grid">
+                    <div class="voucher-btn" onclick="alert('🎟️ UNLOCKED:\n\n1 Free Ice Cream & Coffee Date with Arbaz! 🍦☕')">🍦 Ice Cream Date</div>
+                    <div class="voucher-btn" onclick="alert('🎟️ UNLOCKED:\n\n1 Full Day NO ARGUMENT Guarantee! Today Arbaz will not fight at all! 😇')">😇 Zero Quarrel</div>
+                    <div class="voucher-btn" onclick="alert('🎟️ UNLOCKED:\n\nLate Night Unlimited Call & Secret Sharing Session! 📞✨')">📞 Late Night Call</div>
+                    <div class="voucher-btn" onclick="alert('🎟️ UNLOCKED:\n\nSpecial Extra Tight Hug reserved for Mikuu! 🤗💖')">🤗 Big Hug</div>
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up</div>
+        </div>
+
+        <!-- Slide 8: Grand Love Letter (Part 2) -->
+        <div class="slide">
+            <div class="glass-card">
+                <h2>Final Secret Message 👑</h2>
+                <div class="long-letter">
+                    <strong>My Dearest Miskat,</strong>
+
+                    Zindagi ke har mod par main tumhare sath khada rahunga, chahe halaat kaise bhi hon. Tumne meri zindagi me aakar mujhe ek naya maksad diya hai.
+
+                    Aapko birthday ki bohot bohot mubarakbaad meri jaan! God bless you with all the happiness, health, and success in the world.
+
+                    Hamesha aise hi hasta-muskuraate rehna!
+
+                    <div style="text-align: right; margin-top: 15px; font-weight: bold; color: #ff758c;">
+                        ~ Always & Forever Yours,<br>Arbaz ❤️
+                    </div>
+                </div>
+            </div>
+            <div class="swipe-hint">👆 Swipe up for final surprise</div>
+        </div>
+
+        <!-- Slide 9: Massive I LOVE YOU Page -->
+        <div class="slide">
+            <div class="glass-card" style="justify-content: center;">
+                <p style="font-size: 1.5rem;">Mikuu...</p>
+                <div class="huge-love">I LOVE YOU</div>
+                <div class="huge-love" style="font-size: 2.2rem; margin-top: -10px;">SO MUCH! ❤️</div>
+                <p style="font-size: 1.1rem; margin-top: 20px;">Happy Birthday Once Again My Queen! 👑✨</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function unlockSite() {
+            const pass = document.getElementById('pass-input').value.trim();
+            const err = document.getElementById('err-text');
+
+            if (pass === "2010") {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('music-control').style.display = 'block';
+
+                // Play Background Music
+                const song = document.getElementById('bg-song');
+                song.play().catch(e => console.log("Auto-play blocked"));
+
+                // Play Videos
+                document.getElementById('v1').play();
+                document.getElementById('v2').play();
+
+                // Start Visual Effects & Mini Game
+                startFloatingHearts();
+                spawnTarget();
+            } else {
+                err.style.display = 'block';
+            }
+        }
+
+        // Music Toggle Function
+        let isAudioPlaying = true;
+        function toggleAudio() {
+            const song = document.getElementById('bg-song');
+            const ctrl = document.getElementById('music-control');
+            if (isAudioPlaying) {
+                song.pause();
+                ctrl.innerText = "🎵 Music: Off";
+                isAudioPlaying = false;
+            } else {
+                song.play();
+                ctrl.innerText = "🎵 Music: On";
+                isAudioPlaying = true;
+            }
+        }
+
+        // Mini Game Logic (10 Points Challenge)
+        let gameScore = 0;
+        const targets = ['💋', '💖', '😘', '❤️', '💌'];
+
+        function spawnTarget() {
+            if (gameScore >= 10) return;
+
+            const box = document.getElementById('game-box');
+            const item = document.createElement('div');
+            item.className = 'game-item';
+            item.innerHTML = targets[Math.floor(Math.random() * targets.length)];
+
+            const maxX = box.clientWidth - 50;
+            const maxY = box.clientHeight - 50;
+
+            item.style.left = Math.max(10, Math.random() * maxX) + 'px';
+            item.style.top = Math.max(10, Math.random() * maxY) + 'px';
+
+            item.onclick = function() {
+                gameScore++;
+                document.getElementById('game-score').innerText = gameScore;
+                item.remove();
+
+                if (gameScore < 10) {
+                    spawnTarget();
+                } else {
+                    document.getElementById('game-win').style.display = 'block';
+                }
+            };
+
+            box.appendChild(item);
+        }
+
+        // Floating Hearts Background Animation
+        function startFloatingHearts() {
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                doc
